@@ -45,8 +45,8 @@ pub struct InterfaceIndexConfirmation {
 /// Generated client implementations.
 pub mod backends_client {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
-    use tonic::codegen::*;
     use tonic::codegen::http::Uri;
+    use tonic::codegen::*;
     #[derive(Debug, Clone)]
     pub struct BackendsClient<T> {
         inner: tonic::client::Grpc<T>,
@@ -90,9 +90,8 @@ pub mod backends_client {
                     <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
                 >,
             >,
-            <T as tonic::codegen::Service<
-                http::Request<tonic::body::BoxBody>,
-            >>::Error: Into<StdError> + Send + Sync,
+            <T as tonic::codegen::Service<http::Request<tonic::body::BoxBody>>>::Error:
+                Into<StdError> + Send + Sync,
         {
             BackendsClient::new(InterceptedService::new(inner, interceptor))
         }
@@ -115,34 +114,26 @@ pub mod backends_client {
             &mut self,
             request: impl tonic::IntoRequest<super::PodIp>,
         ) -> Result<tonic::Response<super::InterfaceIndexConfirmation>, tonic::Status> {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    format!("Service was not ready: {}", e.into()),
+                )
+            })?;
             let codec = tonic::codec::ProstCodec::default();
-            let path = http::uri::PathAndQuery::from_static(
-                "/backends.backends/GetInterfaceIndex",
-            );
+            let path = http::uri::PathAndQuery::from_static("/backends.backends/GetInterfaceIndex");
             self.inner.unary(request.into_request(), path, codec).await
         }
         pub async fn update(
             &mut self,
             request: impl tonic::IntoRequest<super::Targets>,
         ) -> Result<tonic::Response<super::Confirmation>, tonic::Status> {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    format!("Service was not ready: {}", e.into()),
+                )
+            })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/backends.backends/Update");
             self.inner.unary(request.into_request(), path, codec).await
@@ -151,15 +142,12 @@ pub mod backends_client {
             &mut self,
             request: impl tonic::IntoRequest<super::Vip>,
         ) -> Result<tonic::Response<super::Confirmation>, tonic::Status> {
-            self.inner
-                .ready()
-                .await
-                .map_err(|e| {
-                    tonic::Status::new(
-                        tonic::Code::Unknown,
-                        format!("Service was not ready: {}", e.into()),
-                    )
-                })?;
+            self.inner.ready().await.map_err(|e| {
+                tonic::Status::new(
+                    tonic::Code::Unknown,
+                    format!("Service was not ready: {}", e.into()),
+                )
+            })?;
             let codec = tonic::codec::ProstCodec::default();
             let path = http::uri::PathAndQuery::from_static("/backends.backends/Delete");
             self.inner.unary(request.into_request(), path, codec).await
@@ -205,10 +193,7 @@ pub mod backends_server {
                 send_compression_encodings: Default::default(),
             }
         }
-        pub fn with_interceptor<F>(
-            inner: T,
-            interceptor: F,
-        ) -> InterceptedService<Self, F>
+        pub fn with_interceptor<F>(inner: T, interceptor: F) -> InterceptedService<Self, F>
         where
             F: tonic::service::Interceptor,
         {
@@ -236,10 +221,7 @@ pub mod backends_server {
         type Response = http::Response<tonic::body::BoxBody>;
         type Error = std::convert::Infallible;
         type Future = BoxFuture<Self::Response, Self::Error>;
-        fn poll_ready(
-            &mut self,
-            _cx: &mut Context<'_>,
-        ) -> Poll<Result<(), Self::Error>> {
+        fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
             Poll::Ready(Ok(()))
         }
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
@@ -248,21 +230,12 @@ pub mod backends_server {
                 "/backends.backends/GetInterfaceIndex" => {
                     #[allow(non_camel_case_types)]
                     struct GetInterfaceIndexSvc<T: Backends>(pub Arc<T>);
-                    impl<T: Backends> tonic::server::UnaryService<super::PodIp>
-                    for GetInterfaceIndexSvc<T> {
+                    impl<T: Backends> tonic::server::UnaryService<super::PodIp> for GetInterfaceIndexSvc<T> {
                         type Response = super::InterfaceIndexConfirmation;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::PodIp>,
-                        ) -> Self::Future {
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(&mut self, request: tonic::Request<super::PodIp>) -> Self::Future {
                             let inner = self.0.clone();
-                            let fut = async move {
-                                (*inner).get_interface_index(request).await
-                            };
+                            let fut = async move { (*inner).get_interface_index(request).await };
                             Box::pin(fut)
                         }
                     }
@@ -273,11 +246,10 @@ pub mod backends_server {
                         let inner = inner.0;
                         let method = GetInterfaceIndexSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            );
+                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
+                            accept_compression_encodings,
+                            send_compression_encodings,
+                        );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
@@ -286,13 +258,9 @@ pub mod backends_server {
                 "/backends.backends/Update" => {
                     #[allow(non_camel_case_types)]
                     struct UpdateSvc<T: Backends>(pub Arc<T>);
-                    impl<T: Backends> tonic::server::UnaryService<super::Targets>
-                    for UpdateSvc<T> {
+                    impl<T: Backends> tonic::server::UnaryService<super::Targets> for UpdateSvc<T> {
                         type Response = super::Confirmation;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
                         fn call(
                             &mut self,
                             request: tonic::Request<super::Targets>,
@@ -309,11 +277,10 @@ pub mod backends_server {
                         let inner = inner.0;
                         let method = UpdateSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            );
+                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
+                            accept_compression_encodings,
+                            send_compression_encodings,
+                        );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
@@ -322,17 +289,10 @@ pub mod backends_server {
                 "/backends.backends/Delete" => {
                     #[allow(non_camel_case_types)]
                     struct DeleteSvc<T: Backends>(pub Arc<T>);
-                    impl<T: Backends> tonic::server::UnaryService<super::Vip>
-                    for DeleteSvc<T> {
+                    impl<T: Backends> tonic::server::UnaryService<super::Vip> for DeleteSvc<T> {
                         type Response = super::Confirmation;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::Vip>,
-                        ) -> Self::Future {
+                        type Future = BoxFuture<tonic::Response<Self::Response>, tonic::Status>;
+                        fn call(&mut self, request: tonic::Request<super::Vip>) -> Self::Future {
                             let inner = self.0.clone();
                             let fut = async move { (*inner).delete(request).await };
                             Box::pin(fut)
@@ -345,28 +305,23 @@ pub mod backends_server {
                         let inner = inner.0;
                         let method = DeleteSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            );
+                        let mut grpc = tonic::server::Grpc::new(codec).apply_compression_config(
+                            accept_compression_encodings,
+                            send_compression_encodings,
+                        );
                         let res = grpc.unary(method, req).await;
                         Ok(res)
                     };
                     Box::pin(fut)
                 }
-                _ => {
-                    Box::pin(async move {
-                        Ok(
-                            http::Response::builder()
-                                .status(200)
-                                .header("grpc-status", "12")
-                                .header("content-type", "application/grpc")
-                                .body(empty_body())
-                                .unwrap(),
-                        )
-                    })
-                }
+                _ => Box::pin(async move {
+                    Ok(http::Response::builder()
+                        .status(200)
+                        .header("grpc-status", "12")
+                        .header("content-type", "application/grpc")
+                        .body(empty_body())
+                        .unwrap())
+                }),
             }
         }
     }

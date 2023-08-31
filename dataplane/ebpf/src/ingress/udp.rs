@@ -21,7 +21,7 @@ pub fn handle_udp_ingress(ctx: TcContext) -> Result<i32, i64> {
 
     let udp_hdr: *mut udphdr = unsafe { ptr_at(&ctx, udp_header_offset)? };
 
-    let original_daddr = unsafe { (*ip_hdr).daddr };
+    let original_daddr = unsafe { (*ip_hdr).__bindgen_anon_1.addrs.daddr };
 
     let key = BackendKey {
         ip: u32::from_be(original_daddr),
@@ -33,17 +33,17 @@ pub fn handle_udp_ingress(ctx: TcContext) -> Result<i32, i64> {
     info!(
         &ctx,
         "Received a UDP packet destined for svc ip: {:i} at Port: {} ",
-        u32::from_be(unsafe { (*ip_hdr).daddr }),
+        u32::from_be(original_daddr),
         u16::from_be(unsafe { (*udp_hdr).dest })
     );
 
     unsafe {
         BLIXT_CONNTRACK.insert(
-            &(*ip_hdr).saddr,
+            &(*ip_hdr).__bindgen_anon_1.addrs.saddr,
             &(original_daddr, (*udp_hdr).dest as u32),
             0 as u64,
         )?;
-        (*ip_hdr).daddr = backend.daddr.to_be();
+        (*ip_hdr).__bindgen_anon_1.addrs.daddr = backend.daddr.to_be();
     };
 
     if (ctx.data() + ETH_HDR_LEN + mem::size_of::<iphdr>()) > ctx.data_end() {

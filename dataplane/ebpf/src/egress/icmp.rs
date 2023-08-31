@@ -25,19 +25,19 @@ pub fn handle_icmp_egress(ctx: TcContext) -> Result<i32, i64> {
         return Ok(TC_ACT_PIPE);
     }
 
-    let dest_addr = unsafe { (*ip_hdr).daddr };
+    let dest_addr = unsafe { (*ip_hdr).__bindgen_anon_1.addrs.daddr };
 
     let new_src = unsafe { BLIXT_CONNTRACK.get(&dest_addr) }.ok_or(TC_ACT_PIPE)?;
 
     info!(
         &ctx,
         "Received a ICMP Unreachable packet destined for svc ip: {:i} ",
-        u32::from_be(unsafe { (*ip_hdr).daddr })
+        u32::from_be(dest_addr)
     );
 
     // redirect icmp unreachable message back to client
     unsafe {
-        (*ip_hdr).saddr = new_src.0;
+        (*ip_hdr).__bindgen_anon_1.addrs.saddr = new_src.0;
         (*ip_hdr).check = 0;
     }
 
@@ -56,7 +56,7 @@ pub fn handle_icmp_egress(ctx: TcContext) -> Result<i32, i64> {
     let icmp_inner_ip_hdr: *mut iphdr = unsafe { ptr_at(&ctx, icmp_header_offset + ICMP_HDR_LEN) }?;
 
     unsafe {
-        (*icmp_inner_ip_hdr).daddr = new_src.0;
+        (*icmp_inner_ip_hdr).__bindgen_anon_1.addrs.daddr = new_src.0;
         (*icmp_inner_ip_hdr).check = 0;
     }
 

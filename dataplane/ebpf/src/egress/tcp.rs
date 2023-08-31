@@ -20,7 +20,7 @@ pub fn handle_tcp_egress(ctx: TcContext) -> Result<i32, i64> {
     let tcp_hdr: *mut tcphdr = unsafe { ptr_at(&ctx, tcp_header_offset)? };
 
     // capture some IP and port information
-    let client_addr = unsafe { (*ip_hdr).daddr };
+    let client_addr = unsafe { (*ip_hdr).__bindgen_anon_1.addrs.daddr };
     let dest_port = unsafe { (*tcp_hdr).dest.to_be() };
     let ip_port_tuple = unsafe { BLIXT_CONNTRACK.get(&client_addr) }.ok_or(TC_ACT_PIPE)?;
 
@@ -38,7 +38,7 @@ pub fn handle_tcp_egress(ctx: TcContext) -> Result<i32, i64> {
     );
 
     unsafe {
-        (*ip_hdr).saddr = ip_port_tuple.0;
+        (*ip_hdr).__bindgen_anon_1.addrs.saddr = ip_port_tuple.0;
     };
 
     if (ctx.data() + ETH_HDR_LEN + mem::size_of::<iphdr>()) > ctx.data_end() {

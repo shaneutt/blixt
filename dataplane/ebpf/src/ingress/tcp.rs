@@ -21,7 +21,7 @@ pub fn handle_tcp_ingress(ctx: TcContext) -> Result<i32, i64> {
 
     let tcp_hdr: *mut tcphdr = unsafe { ptr_at(&ctx, tcp_header_offset)? };
 
-    let original_daddr = unsafe { (*ip_hdr).daddr };
+    let original_daddr = unsafe { (*ip_hdr).__bindgen_anon_1.addrs.daddr };
 
     let key = BackendKey {
         ip: u32::from_be(original_daddr),
@@ -38,7 +38,7 @@ pub fn handle_tcp_ingress(ctx: TcContext) -> Result<i32, i64> {
     );
 
     unsafe {
-        (*ip_hdr).daddr = backend.daddr.to_be();
+        (*ip_hdr).__bindgen_anon_1.addrs.daddr = backend.daddr.to_be();
     }
 
     if (ctx.data() + ETH_HDR_LEN + mem::size_of::<iphdr>()) > ctx.data_end() {
@@ -76,7 +76,7 @@ pub fn handle_tcp_ingress(ctx: TcContext) -> Result<i32, i64> {
 
     unsafe {
         BLIXT_CONNTRACK.insert(
-            &(*ip_hdr).saddr,
+            &(*ip_hdr).__bindgen_anon_1.addrs.saddr,
             &(original_daddr, (*tcp_hdr).source.to_be() as u32),
             0 as u64,
         )?;
